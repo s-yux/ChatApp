@@ -70,14 +70,17 @@ class MessagesStream extends StatelessWidget {
           }
           final messages = snapshot.data.docs;
           List<String> emailsOnly = [];
+          final currentUser = loggedInUser.email;
           for (var message in messages){
             final messageSender = message.data()['sender'];
-            final currentUser = loggedInUser.email;
+            final messageReceiver = message.data()['receiver'];
             if(messageSender != currentUser) {
+              emailsOnly.add(messageReceiver);
               emailsOnly.add(messageSender);
             }
           }
           List<String> listOfUsers = emailsOnly.toSet().toList();
+          listOfUsers.remove(currentUser);
           return ListView.builder(
               itemCount: listOfUsers.length,
               itemBuilder: (context, i){

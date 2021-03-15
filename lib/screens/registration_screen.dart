@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gigchat/components/rounded_button.dart';
@@ -63,7 +64,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   password = value;
                 },
                 decoration: kTextFieldDeclaration.copyWith(
-                  hintText: 'Enter your Password (At least 7 characters)...'
+                  hintText: 'Enter your Password (Min 7 char)...'
                 )
               ),
               SizedBox(
@@ -86,6 +87,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           email: email,
                           password: password);
                       if(newUser != null){
+                        await FirebaseFirestore.instance.collection('messages').add({
+                          'text': "Welcome to GigChat!",
+                          'sender': "official@gigchat.com",
+                          'receiver': email,
+                          'time': FieldValue.serverTimestamp()
+                        });
                         Fluttertoast.showToast(
                             msg: 'Register Successful!',
                             toastLength: Toast.LENGTH_SHORT);
